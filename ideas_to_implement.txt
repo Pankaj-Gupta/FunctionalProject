@@ -1,0 +1,4 @@
+1 - allow functionality for getting a content using url
+2 - soup prettify
+3 - get and separate tags
+
