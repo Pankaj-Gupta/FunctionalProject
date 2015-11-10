@@ -1,8 +1,20 @@
 import Network.HTTP.Conduit (simpleHttp)
-import qualified Data.ByteString.Lazy.Char8 as L
+import Control.Monad
+import qualified Data.ByteString.Lazy as BL
+import qualified Data.ByteString as B
+import Data.Text.Encoding
+import qualified Data.Text as T
+import qualified Data.String as S
 
 -- the URL we're going to search
 url = "http://www.facebook.com"
 
--- main http-conduit ko istamal kiya hai
-main = L.putStrLn . L.take 1000 =<< simpleHttp url
+summonResponse :: String -> IO String
+summonResponse url = liftM (T.unpack. decodeUtf8 . B.concat . BL.toChunks ) $ simpleHttp url
+
+--something:: MonadIO m => m L.ByteString -> [Char]
+--something url = 
+
+main = do
+	y <- summonResponse url
+	print y
