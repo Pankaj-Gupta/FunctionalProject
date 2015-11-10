@@ -1,9 +1,16 @@
-module Downloader where
+module Reader where
 
-import Network.Download
+import System.IO
+import Data.List
+import Data.Char
+import Data.Functor
 
+main :: IO()
 main = do
-	doc <- openURI "http://haskell.org"
+	let filename = "test.html"
+	--fileName <- getLine
+	doc <- getContents fileName ReadMode
+	--raw <- fmap (map cleaner) (hGetContents inputHandle)
 	print doc
 	
 
