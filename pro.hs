@@ -1,2 +1,31 @@
-a=10
-print 10
+import qualified Data.ByteString.Char8 as B
+import Data.Tree.NTree.TypeDefs
+import Data.Maybe
+import Text.XML.HXT.Core
+import Control.Monad
+import Control.Monad.Trans
+import Control.Monad.Maybe
+import Network.HTTP
+import Network.URI
+import System.Environment
+
+
+openUrl :: String -> MaybeT IO String
+openUrl url = case parseURI url of
+    Nothing -> fail ""
+    Just u  -> liftIO (getResponseBody =<< simpleHTTP (mkRequest GET u))
+
+css :: ArrowXml a => String -> a XmlTree XmlTree
+css tag = multi (hasName tag)
+
+get :: String -> IO (IOSArrow XmlTree (NTree XNode))
+get url = do
+  contents <- runMaybeT $ openUrl url
+  return $ readString [withParseHTML yes, withWarnings no] (fromMaybe "" contents)
+
+
+main = do
+  let url = "http://www.google.com" 
+  doc <- get url
+  return doc 
+  putStrLn url
