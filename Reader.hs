@@ -8,19 +8,18 @@ import Control.Applicative ((<$>))
 --import Text.Parsec.String
 --import FunctionalProject.DataType
 
+data Tree = Leaf String	| Node [Tree a]
+	deriving(Show)
+
 main :: IO()
 main = do
-	let raw = Data.Text.Lazy.IO.hGetContents =<< openFile "test.html" ReadMode
+	let raw = Data.Text.Lazy.IO.hGetContents =<< openFile "test.html" ReadMode :: IO String
 	raw >>= Data.Text.Lazy.IO.putStrLn
-
-
-data Tree = Leaf String | Node [Tree a]
-			deriving (Show)
 
 parseTree :: Parser Tree
 parseTree = node <|> leaf
 	where 
-		node = Node <$> between (char '<') (char '>') $many parseTree
+		node = Node <$> between (char '<') (char '>') (many parseTree)
     	leaf = Leaf <$> many1 (noneOf "<>")
 
  --	parseTest parseGroups raw2
